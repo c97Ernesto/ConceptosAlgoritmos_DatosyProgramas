@@ -6,181 +6,157 @@ lectura finaliza cuando llega una persona con DNI 33555444, la cual debe procesa
 Una vez finalizada la lectura de todas las personas, se pide:
 a. Informar la cantidad de personas cuyo DNI contiene más dígitos pares que impares.
 b. Informar los dos códigos de género más elegidos.
-c. Realizar un módulo que reciba un DNI, lo busque y lo elimine de la estructura. El DNI puede}
-
-PROGRAM ejercicio1
-Const
-    MAXG = 5;
-Type
-    rango = 1..MAXG;
-    cadena50 = string[50];
-    anios = 1..100;
-    persona = record
-        cod: genAct;
-		ap: cadena50;
-		nom: cadena50
-        edad: anios;
-        DNI: integer;
-    end;
-    vecCodigos = array [rango] of integer;
-    lista: ^nodo;
-    nodo = record
-        datos: persona;
-        sig: lista;
-    end;
-
-procedure GenerarLista (l:lista);		//Generamos Lista
-	procedure leerPersona(var p: persona);      //Ingresar INFO de la persona
-	var
-	    p: persona;
-	begin
-	    with p do begin
-	        write('Ingrese nro de Codigo de Genero que prefiera:');
-	        write('1: drama, 2: romántico, 3: acción, 4: suspenso, 5: terror');
-	        readln(cod);
-	        write('Ingrese apellido:');
-			readln(ap);
-			write('Ingrese nombre:');
-			readln(nom);
-	        write('Ingrese edad:');
-	        readln(edad);
-	        write('Ingrese DNI:');
-	        readln(DNI);
-	    end;
-	end;
-
-	procedure agregarAtras (var pri, ult: lista; p:persona);    //Agregamos los datos a la lista
-	var
-	    nue: lista;
-	begin
-	    new(nue);
-	    nue^.datos:= p;
-	    nue^.sig:= nil;
-	    if pri <> nil then
-	        ult^.sig:= nue;
-	        else 
-	            pri:= nue;
-	    ult:= nue
-	end;
-var
-	per: persona;
-	L: lista;
-	U: lista;
-begin
-	crearLista(L, U);
-	repeat
-		leerPersona(per);
-		agregarAtras(L, U, per);
-
-	until per.dni = 33555444;
-end;
-
-Procedure IncisoAyB (l: lista, var v: vecCodigos);	//IncisoB
-	Procedure iniVector (var v: vecCodigos); //Procedimiento Inicializar Vector
-	var
-		i: integer
-	begin
-		for i:= 1 to MAXG do 
-			v[i]:= 0;
-	end;
-		Function masPares(n: integer): boolean;		//Funcion masPares
-	var
-		p, i, resto: integer
-	begin
-		p:= 0;
-		i:= 0;
-		while num <> 0 do begin
-			resto:= num div 10;			//nos quedamos con el ultimo numero del dni
-			if (resto mod 2) = 0 then		//si el ultimo numero que queda en el dni es par...
-				p:= p + 1;			//incrementamos pares
-			else			//sino...
-				i:= i + 1;			//incrementamos inpares
-			num:= num div 10;	//le sacamos el ultimo digito al dni
-		end;
-		if (p > i) then			//si hay mas pares que impares..
-			masPares:= true			//devuelve verdadero
-		else
-			masPares.= false;		//sino, devuelve falso
-	end;
-	Procedure recorrerLista (L: lista; var v: vecCodigos; var: cantP: integer);		//Recorremos
-	begin
-		while (l <> nil) do begin
-			if (masPares(l^datos.dni) then
-				cantP:= cantP + 1;
-			v[l^datos.cod]:= v[l^.datos.cod] + 1;		//al vector "v" en la pos "[.cod]" le asigno lo que tenia anteriormente la pos "[.cod]" y le sumo 1 para contar que encontre de nuevo algo en esa posicion
-			l:= l^.sig;
-		end;
-	end;
-	procedure maximos (var cod1, cod2: integer; v: vecCodigos);
-	var
-		max1, max2: integer;
-	begin
-		max1:= -1;
-		max2:= -1;
-		for i:= 1 to MAXG do begin
-			if v[i] > max1 then begin
-				max2:= max1;
-				max1:= v[i];
-				cod2:= cod1;
-				cod1:= i;
-			end;
-			else begin
-				if v[i] > max2 then begin
-					max2:= v[i];
-					cod2:= i;
-				end;
-			end;
-		end;
-	end;
-var
-	v: vecCodigos;
-	cod1, cod2: integer;
-begin
-	IniVector(v);
-	recorrerLista(l, v);
-	maximos(cod1, cod2, v);
-	writeln('Los Generos mas elegido son: ',cod1,' y ',cod2);
+c. Realizar un módulo que reciba un DNI, lo busque y lo elimine de la estructura. El DNI puede
+no existir.}
+PROGRAM ejercicio01_repaso
+CONST
+	MAXgeneros = 5;
 	
-end;
-Procedure EliminarDNI (var l: lista);
-	Procedure borrarElem(var L: lista; n: integer; var e: boolean); //Borrar Numero
-	var
-	    ant, act: lista;
-	begin
-	    e:= false;
-	    act:= L;
-	    while (L <> nil) and (act^.datos.DNI <> n) do begin
-	        ant:= act;
-	        act:= act^.sig;
-	    end;
-	    if (act <> nil) then
-	        e:= true;
-	        if (act = L) then
-	            L:= L^.sig;
-	            else
-	                ant^.sig:= act^.sig;
-	        dispose(act);
-	    end;
+TYPE
+	rng_genero = 1..MAXgeneros;
+	
+	Persona = record
+		dni: integer;
+		nomApe: string;
+		edad: integer;
+		codGenero: integer;
 	end;
-var
-	n: integer;
-	ok: boolean;
-begin
-	Writeln('Ingrese el numero de DNI a eliminar');
-	readln(n);
-	borrarElem(l, n, ok);
-	if ok then
-		writeln('La persona con el DNI ',n,' fue eliminada);
+	
+	vec_Generos = array [rng_genero];
+	
+	lista_Personas =  ^nodo;
+	nodo = record;
+		datos: Persona;
+		sig: lista_Personas;
 	end;
-end;
 
-var         //PROGRAMA PRINCIPAL
-    L, U: lista;
-	vector: vecCodigos;
-begin
-	L:= nil;
-	U:= nil;
-	GenerarLista(L, U);
-	IncisoB(L, vector);
-	EliminarDNI(L);
-end;	
+//__________________________Generar Lista__________________________
+{leer y almacenar la información de las personas que desean
+participar de dicho casting. De cada persona se lee: DNI, apellido 
+y nombre, edad y el código de género de actuación que prefiere (1: drama, 
+2: romántico, 3: acción, 4: suspenso, 5: terror). La lectura finaliza 
+cuando llega una persona con DNI 33555444, la cual debe procesarse.}
+Procedure GenerarLista(var lP: lista_Personas; var vGeneros: vec_Generos);
+
+	procedure leerInfo(var r: Persona; var v: vec_Generos);
+	begin
+		with r do begin
+			write('Dni: ');
+			readln(dni);
+			write('Nombre y Apellido: ');
+			readln(nomApe);
+			write('Edad: ');
+			readln(edad);
+			write('Codigo de genero: ');
+			readln(codGenero);
+			v[codGenero]:= v[codGenero] + 1;
+		end;
+	end
+	
+	procedure crearLista(var l: lista_Personas; r: Persona);
+	var
+		act, nodo: lista_Personas;
+	begin
+		new(nodo);
+		nodo^.datos:= r;
+		nodo:= nil;
+		if (l <> nil) then begin
+			act:= l;
+			while(act^.sig <> nil) do 
+				act:= act.sig;
+			act^.sig:= nodo;
+		end
+		else
+			l:= nodo;
+	end;
+	
+Var
+	persona: Persona;
+Begin
+	lP:= nil;
+	
+	repeat
+		leerInfo(persona, vGeneros);
+		crearLista(lP, persona);
+	until (persona.dni = 33555444);
+End;
+//__________________________P.P__________________________
+{b. Informar los dos códigos de género más elegidos.}
+Procedure RecorrerVector(v: vec_Generos);
+
+	procedure calcularMaximos(cant: integer; var m1, m2: integer; i: rng_genero; var g1, g2: rng_genero);
+	begin
+		if (cant > m1) then begin
+			m2:= m1;
+			g2:= g1;
+			m1:= cant;
+			g1:= i;
+		end;
+		else
+			if (cant > m2) then begin
+				m2:= cant;
+				g2:= i;
+			end
+	end;
+	
+Var
+	i, gen, genMax1, genMax2: rng_genero;
+	max1, max2: integer;
+Begin
+	max1:= -1; 
+	max2:= -1;
+	
+	for i:= 1 to MAXgeneros do 
+		calcularMaximos(v[i], max1, max2, i, genMax1, genMax2);
+	
+	writeln('El Mayor Genero es: ', max1);
+	writeln('El Segundo Mayor Genero es: ', max2);
+End;
+//__________________________Recorrer Lista y eliminar__________________________
+{c. Realizar un módulo que reciba un DNI, lo busque y lo elimine de la estructura. El DNI puede
+no existir.}
+Procedure RecorrerListaEliminar(var lP: lista_Personas);
+
+	procedure eliminarDeLista(var l: lista_Personas; var ok: boolean; n: integer);
+	var
+		ant, act: lista_Personas;
+	begin
+		ok:= false;
+		act:= l;
+		
+		while(act <> nil) and (act^.datos.dni <> n)do begin
+			ant:= act;
+			act:= act^.sig;
+		end;
+		
+		if (act <> nil) then
+			ok:= true;
+			if (act = l) then
+				l:= l^.sig;
+			else
+				ant^.sig:= act^.sig;
+			dispose(act);
+		end;
+	end;
+
+Var
+	num: integer;
+	eliminado: boolean;
+Begin
+	write('Ingresar DNI de Persona a eliminar: ');
+	readln(num);
+	eliminarDeLista(lP, num, elimnado);
+	if (eliminado) then 
+		writeln('La Persona con Dni ', num, ' se elimino.');
+End;
+
+//__________________________P.P__________________________
+VAR
+	listaPersona: lista_Personas;
+	vecGeneros: vec_Generos;
+BEGIN
+	IniVector(vecGeneros);
+	GenerarLista(listaPersona, vecGeneros);
+	RecorrerVector(vecGeneros);
+	RecorrerListaEliminar(listaPersona);
+END.
