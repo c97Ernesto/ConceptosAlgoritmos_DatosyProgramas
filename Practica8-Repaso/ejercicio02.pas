@@ -12,147 +12,151 @@ b. Informar apellido y nombre de aquellos clientes cuyo DNI contiene al menos do
 c. Realizar un módulo que reciba un código de cliente, lo busque (seguro existe) y lo elimine de
 la estructura.}
 
-PROGRAM	ejercicio2;
-Const
-    MAXPoliza = 6;
-Type
-    cadena50 = string[50];
-    codigo = 1..MAXPoliza;
-    tablaCodigos = array [codigo] of real;
-    Cliente = record
-        codCliente: integer;
-        DNI: integer;
-        apellido:  cadena50;
-        nombre: cadena50;
-        codPoliza: codigo;
-        montoMensual: real;
-    end;
-    lista = ^nodo;
-    nodo = record
-        datos: Cliente;
-        sig: lista;
-    end;
-Procedure TablaMontoAdicional(var v: tablaCodigos);										{TABLA CARGADA}
+PROGRAM ejercicio02_AseguradoraAutomotriz;
+CONST
+	FIN = 1122;
+	MAXpoliza = 6;
+	
+TYPE
+	
+	rng_poliza = 1..MAXpoliza;
+	reg_Cliente = record
+		codCliente: integer;
+		dni: integer;
+		apellido: string;
+		nombre: string;
+		codPoliza: rng_poliza;
+		montoMensual: real;
+	end;
+	
+	lista_Clientes = ^nodo;
+	nodo = record
+		datos: reg_Cliente;
+		sig: lista_Clientes;
+	end;
+
+	vec_MontoSegunPoliza = array [rng_poliza] of real;
+
+//__________________________Tabla que se dispone__________________________	
+Procedure TablaMontoAdicional(var v: vec_MontoSegunPoliza);										{TABLA CARGADA}
 begin
 	{se dispone}
 end;
-Procedure GenerarLista (var l:lista);												{GENERAR LISTA}	
-	Procedure ingresarDatos(var d: Cliente);
-	begin
-		with d do begin
-			write('Ingrese Codigo de Cliente: ');
-			readln(codCliente);
-			write('Ingrese DNI: ');
-			readln(DNI);
-			write('Ingrese Apellido: ');
-			readln(apellido);
-			write('Ingrese nombre: ');
-			readln(nombre);
-			write('Ingrese monto basico que abona mensualmente: ');
-			readln(montoMensual);
-			writeln('Ingrese Codigo de Poliza');
-			readln(codPoliza);
-		end;
-	end;
-	Procedure cargarLista (var l: lista; d: Cliente); 
-	var
-		aux: lista;
-	begin
-		new(aux);
-		aux^.datos:= d;
-		aux^.sig:= l;
-		l:= aux;
-	end;
-var
-	c: Cliente;
-begin
-	repeat
-		ingresarDatos(c);
-		cargarLista(l, c);
-	until  c.codCliente = 1122; 
-end;
 
-Procedure Informar_A(l: lista; v: tablaCodigos); 										{ITEM A}
-var
-	monTotal: real;
-begin
-	while l <> nil do begin
-		monTotal:= 0;
-		Writeln('Nombre: ',l^.datos.nombre);
-		writeln('Apellido: ',l^.datos.apellido);
-		writeln('DNI: ',l^.datos.DNI);
-		monTotal:= l^.datos.montoMensual + v[l^.datos.codPoliza];
-		writeln('Monto total a pagar: ', monTotal);
-	end;
-end;
-Procedure Informar_B(l: lista);														{ITEM B}
-	Function dosNueve(num: integer): boolean;
-	var
-		cant, resto: integer;
+//__________________________Generar Lista Clientes__________________________	
+Procedure GenerarLista(var lClientes: lista_Clientes);
+
+	procedure leerInfo(var r: reg_Cliente);
 	begin
-		dosNueve:= false;
-		cant:= 0;
-		while (num <> 0) and (cant >= 2) do begin
-			resto:= num mod 10;
-			if resto = 9 then
-				cant:= cant + 1
-			else 
-				num:= num div 10;
+		with r do begin
+			write('Ingresar Codigo Cliente: ');
+			readln(codCliente);
+			write('Dni: ');
+			readln(dni);
+			write('Apellido: ');
+			readln(apellido);
+			write('Nombre: ');
+			readln(nombre);
+			write('Codigo de Poliza: ');
+			readln(codPoliza);
+			write('montoMensual');
 		end;
-		if cant >= 2 then
-			dosNueve:= true;
 	end;
 	
-begin
-	while l <> nil do begin
-		if dosNueve(l^.datos.DNI) then begin
-			writeln(l^.datos.nombre);
-			writeln(l^.datos.apellido);
-			writeln(l^.datos.DNI);
-		end;
-		l:= l^.sig;
+	procedure crearLista(var l: lista_Clientes; reg: reg_Cliente);
+	begin
+	
 	end;
-end;
-Procedure Eliminar_C (var l: lista);													{ITEM C}	
-    Procedure borrarElem (var l: lista; n: integer; var exito: boolean);
-    var
-        act, ant: lista;
-    begin
-        exito:= false;
-        act:= l;
-        while (l <> nil) and (act^.datos.codCliente <> n) do begin
-            ant:= act;
-            act:= act^.sig;
-        end;
-        if (act <> nil) then
-            exito:= true;
-            if act = l then     //si es el primero..
-                l:=l^.sig
-            else            //si esta en medio
-                ant^.sig:= act^.sig;
-            dispose(act);
-    end;
-var
-    cod: integer;
-    si: boolean;
-begin
-    write('Ingrese codigo de CLilente a eliminar: ');
-    readln(cod);
-    borrarElem(l, cod, si);
-    if si then
-        write('El Cliente con codigo ',cod,' fue borrado')
-    else
-        write('No existe ese Cliente');
-end;
-    
-var             																{PROG PRINC}
-    L: lista;
-    vector: tablaCodigos;
-begin
-	L:= nil;
-	TablaMontoAdicional(vector);
-	GenerarLista(L);
-	Informar_A(L, vector);
-	Informar_B(L);
-	Eliminar_C(L);
-end.
+	
+Var
+	cliente: reg_Cliente;
+Begin
+    lClientes:= nil;
+	repeat
+		leerInfo(cliente);
+		crearLista(lClientes, cliente);
+	until cliente.codCliente = FIN;
+End;
+
+//__________________________Recorrer Lista y Mostrar en Pantalla__________________________
+Procedure RecorrerLista(l: lista_Clientes; v: vec_MontoSegunPoliza);
+	
+	{a. Informar para cada cliente DNI, apellido, nombre y el monto completo que 
+	paga mensualmente por su seguro automotriz (monto básico + monto adicional).}
+	procedure mostrarDatos_A(cliente: reg_Cliente; v: vec_MontoSegunPoliza);
+	begin
+		with cliente do begin
+			writeln('Dni: ', dni);
+			writeln('Codigo Cliente: ', codCliente);
+			writeln('Apellido: ', apellido);
+			writeln('Nombre: ', nombre);
+			writeln('Monto de Seguro Automotriz: ',montoMensual + v[codPoliza]);
+		end;
+	end;
+	
+	{b. Informar apellido y nombre de aquellos clientes cuyo DNI contiene al menos 
+	dos dígitos 9.}
+	procedure mostrarDatos_B(cliente: reg_Cliente);
+		function masUnNueve(num: integer): boolean;
+		var
+		    cant, resto: integer;
+		begin
+		    cant:= 0;
+			while ((num <> 0) and (cant > 1)) do begin
+				resto:= num mod 10;
+				
+				if (resto = 9) then
+					cant:= cant + 1
+				else
+					num:= num div 10;
+			end;
+			masUnNueve:= (cant > 1);
+		end;
+	begin
+		if (masUnNueve(cliente.dni)) then begin
+			writeln('Apellido: ', cliente.apellido);
+			writeln('Nombre: ', cliente.nombre);
+		end;
+	end;
+
+Begin
+	while(l <> nil) do begin
+		mostrarDatos_A(l^.datos, v);
+		mostrarDatos_B(l^.datos);
+	end;	
+End;
+
+//__________________________Eliminar Cliente Existente__________________________
+{c. Realizar un módulo que reciba un código de cliente, lo busque (seguro existe) y lo elimine de
+la estructura.}
+Procedure EliminarCliente(var lC: lista_Clientes; num: integer);
+Var
+	ant, act: lista_Clientes;
+Begin
+	act:= lC;
+	while (act^.datos.dni <> num) do begin
+		ant:= act;
+		act:= act^.sig;
+	end;
+	if (act = lC) then
+		lC:= lC^.sig
+	else
+		ant^.sig:= act^.sig;
+	dispose(act);
+End;
+
+//__________________________P.P__________________________
+VAR
+	vecMontoSegunPoliza: vec_MontoSegunPoliza;
+	listaClientes: lista_Clientes;
+	dni: integer;
+	
+BEGIN
+	TablaMontoAdicional(vecMontoSegunPoliza);
+	GenerarLista(listaClientes);
+	RecorrerLista(listaClientes, vecMontoSegunPoliza);
+	
+	write('Ingresar dni de cliente a eliminar: ');
+	readln(dni);
+	EliminarCliente(listaClientes, dni);
+END.

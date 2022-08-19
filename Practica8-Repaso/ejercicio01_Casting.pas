@@ -8,7 +8,7 @@ a. Informar la cantidad de personas cuyo DNI contiene más dígitos pares que im
 b. Informar los dos códigos de género más elegidos.
 c. Realizar un módulo que reciba un DNI, lo busque y lo elimine de la estructura. El DNI puede
 no existir.}
-PROGRAM ejercicio01_repaso
+PROGRAM ejercicio01_Casting;
 CONST
 	MAXgeneros = 5;
 	
