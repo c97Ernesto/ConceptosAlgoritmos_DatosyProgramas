@@ -3,107 +3,113 @@ apellido y peso registrado el primer día de cada semana de embarazo (a lo sumo 
 maternidad necesita un programa que analice esta información, determine e informe:
 a. Para cada embarazada, la semana con mayor aumento de peso.
 b. El aumento de peso total de cada embarazada durante el embarazo.}
-
 PROGRAM ejercicio4;
 Const
-	dimF = 42;
+	FIN = 'ZZZ';
+	MAXsemanas = 42;
 Type
 	cadena50 = string[50];
-	semanas = 1..dimF;
-	vector = array [semanas] of real;
-	paciente = record
+	rng_semanas = 1..MAXsemanas;
+	vec_Semanas = array [rng_semanas] of real;
+	
+	reg_Paciente = record
 		nombre: cadena50;
 		apellido: cadena50;
-		vecSemanas: vector; 
+		vSemanas: vec_Semanas; 
 		dimL: integer;
 	end;
-	lista = ^nodo;
+	
+	lista_Pacientes = ^nodo;
 	nodo = record
-		datos: paciente;
-		sig: lista;
+		datos: reg_Paciente;
+		sig: lista_Pacientes;
 	end;
-Procedure GenerarLista(l: lista);													//GENERAR LISTA
-	procedure leerPaciente(var p: paciente);
-		procedure leerVector(var v: vector; dim: semanas);
+	
+//__________________________Generar Lista Pacientes__________________________	
+Procedure GenerarLista(lP: lista_Pacientes);													//GENERAR LISTA
+
+	procedure leerPaciente(var p: reg_Paciente);
+		procedure leerVector(var v: vec_Semanas);
 		var
 			peso: real;
 			i: integer;
 		begin
-			for i:= 1 to dim do begin
+			for i:= 1 to MAXsemanas do begin
 				writeln('Ingrese peso de la semana: ',i);
 				readln(peso);
 				v[i]:= peso;
 			end;
 		end;
+		
 	begin
 		with p do begin
-			writeln('Ingrese nombre: ');
-			read(nombre);
-			writeln('Ingrese apellido: ');
-			read(apellido);
-			writeln('Ingrese cantidad de semanas de embarazo: ');
-			read(dimL);
-			while dimL > dimF do begin
-				writeln('El valor excede la cantidad de semanas.');
-				read(dimL);
+			write('Ingrese nombre: ');
+			readln(nombre);
+			if (nombre <> FIN) then begin
+				write('Ingrese apellido: ');
+				readln(apellido);
+				leerVector(vSemanas);
 			end;
-			leerVector(vecSemanas, dimL);
 		end;
 	end;
-	procedure agregarAdelante(var l: lista; p: paciente);
+	
+	procedure agregarAdelante(var l: lista_Pacientes; p: reg_Paciente);
 	var
-	    nodo: lista;
+	    nodo: lista_Pacientes;
 	begin
 	    new(nodo);
 	    nodo^.datos:= p;
 	    nodo^.sig:= nil;
-	    L:= nodo;
+	    l:= nodo;
 	end;
+	
 var
-	p: paciente;
+	paciente: reg_Paciente;
 begin
-	leerPaciente(p);
-	while (p.nombre <> '') do begin
-		agregarAdelante(l, p);
-		leerPaciente(p);
+	lP:= nil;
+	leerPaciente(paciente);
+	while (paciente.nombre <> FIN) do begin
+		agregarAdelante(lP, paciente);
+		leerPaciente(paciente);
 	end;
 end;
 
-Procedure Item_AyB (l: lista);															//Item_A
-	procedure recorrerVector(v: vector; var s: integer; var t: real);
+//__________________________Recorrer Lista__________________________	
+Procedure RecorrerPacientes(lP: lista_Pacientes);
+
+	Procedure recorrerVecSemanas(v: vec_Semanas; var totalPeso: real; var max: rng_semanas);
 	var
-		i: semanas;
-		p: real;
+		i: rng_semanas;
 	begin
-		p:= -1;
-		s:= 0;
-		t:= 0;
-		for i:= 1 to dimL do begin
-			t:=v[i];
-			if v[i] > p then begin
-				p:= v[i];
-				s:= i;
-			end;
+		totalPeso:= 0;
+		max:= 1;
+		
+		for i:= 2 to MAXsemanas do begin
+			totalPeso:= totalPeso + v[i];
+			
+			if (v[i] > v[max]) then
+				max:= i;
 		end;
 	end;
-var
-	sem: semanas;
-	tot: real;
-begin
-	while (l <> nil) do begin
-		writeln('Nombre: ',l^.datos.nombre);
-		writeln('Apellido :',l^.datos.apellido);
-		recorrerVector(l^.datos.vecSemanas, sem, tot);
-		writeln('La semana de mayor aumento de peso fue: ',sem);
-		writeln('El aumento total de peso fue: ',tot);
-		l:= l^.sig;
-	end;
-end;
 
-var																					//PROGRAMA PRINCIPAL
-	L: lista;
-begin
-	L:= nil;
-	GenerarLista(L);
-	Item_AyB(L);
-end;
+Var
+	totalPeso: real;
+	maxSemana: rng_semanas;
+
+Begin
+
+	while(lP <> nil) do begin
+		recorrerVecSemanas(lP^.datos.vSemanas, totalPeso, maxSemana);
+		writeln('La semana que mas aumento de peso tuvo ', lP^.datos.nombre, ' es la semana ', maxSemana,'.');
+		writeln('Y el aumento de peso Total en las semanas fue de: ', totalPeso);
+		lP:= lP^.sig;
+	end;
+		
+End;
+//__________________________P.P__________________________	
+VAR
+	listaPacientes: lista_Pacientes;
+BEGIN
+	GenerarLista(listaPacientes);
+	RecorrerPacientes(listaPacientes);
+END.
