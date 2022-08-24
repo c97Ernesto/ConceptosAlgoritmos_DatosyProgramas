@@ -55,7 +55,7 @@ BEGIN
   
 	{Para for: inicialización (i:= 1), testeo (i <= 30), e incremento (i:= i + 1) = 3*n + 2}
 	for i:=1 to 10 do begin   				{(3*10+2) = 32ut}
-		read(emp.dirCorreo, emp.edad, emp.sueldo);   				{0ut}
+		read(emp.dirCorreo, emp.edad, emp.sueldo);   				{read y write no se cuentan: 0ut}
 	
 		if (emp.edad < 40) and (emp.sueldo < 40000) then   					{(1ut + 1ut + 1ut) * 10 = 30ut }
 			exp.sueldo:= exp.sueldo + 7000;   			{2ut * 10 = 20ut}
