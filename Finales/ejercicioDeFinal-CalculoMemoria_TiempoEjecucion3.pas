@@ -1,11 +1,11 @@
 {Teniendo en cuenta las referencias, calcule e indique la cantidad de memoria
 estática, dinámica y el tiempo de ejecución. Muestre como se obtuvieron los datos.
-Char		1b
-Integer		4b
-Real		8b
-Boolean		1b
-Sring		longitud + 1
-Puntero		4b
+Char		1 bytes
+Integer		4 bytes
+Real		8 bytes
+Boolean		1 bytes
+Sring		longitud + 1 bytes
+Puntero		4 bytes
 }
 
 program ejercicioDeFinal;
@@ -13,23 +13,23 @@ type
 	cadena30 = string[30];	
 	categorias = 1..5;
 	
-	participante = record		{31 + 8 + 4 = 44b}
-		ape_nom: cadena30; 		{31b}
-		categ: categorias;		{4b}
-		tiempo: real;			{8b}
+	participante = record		{31 + 8 + 4 = 44 bytes}
+		ape_nom: cadena30; 		{31 bytes}
+		categ: categorias;		{4 bytes}
+		tiempo: real;			{8 bytes}
 	end;
 	
-	vector = array [1..20]; of ^participante; {4*20 = 80b}
+	vector = array [1..20] of ^participante; {4*20 = 80 bytes}
 	
-var		{memoria estática = 80 + 4 + 4+ 31 = 119b}
-	p: vector;		{80b}
-	i: integer;		{4b}
-	c: categorias;		{4b}
-	ayn: cadena30;		{31b}
+var		{memoria estática = 80 + 4 + 4+ 31 = 119 bytes}
+	p: vector;		{80 bytes}
+	i: integer;		{4 bytes}
+	c: categorias;		{4 bytes}
+	ayn: cadena30;		{31 bytes}
 	
-begin	{memoria dinámica = 220b}
+begin	{memoria dinámica = 440 bytes - 264 bytes = 176 bytes}
 	for i:= 1 to 10 do begin		//3*10 + 2 = 32ut
-		new(p[i]);				{44*10 = 440b}
+		new(p[i]);				{44*10 = 440 bytes}
 		read(c);
 		read(ayn);
 		p[i]^.categ:= c;		//1ut * 10
@@ -38,6 +38,6 @@ begin	{memoria dinámica = 220b}
 	end;	//32ut + 30ut = 60ut
 	
 	for i:= 10 downto 5 do	//3*5 + 2 = 17ut
-		dispose(p[i]);			{440b / 2 = 220b}
+		dispose(p[i]);			{44 * 6 = 264 bytes}
 		
 end; //Tiempo de ejecucion = 60ut + 17ut = 77ut}
