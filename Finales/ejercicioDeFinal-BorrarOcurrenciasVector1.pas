@@ -6,7 +6,7 @@ Procedure EjerDeFinal_BorrarOcurrencias;
 CONST 
 	dimF = 500;
 TYPE
-	rng_vector = 1..dimF;
+	rng_vector = 0..dimF;
 	vector = array [rng_vector] of integer;
 
 Procedure EliminarOcurrencias(var v: vector; var dimL: rng_vector; var ok: boolean; x: integer);
@@ -14,15 +14,14 @@ Var
 	i, j: rng_vector;
 Begin
 	ok:= false;
-	i:= 1;
-	while (i <= dimL) do begin
+	i:= 0;
+	while ((i < dimL) and (v[i] <= x)) do begin
+        i:= i + 1;
 		if (x = v[i]) then begin
 			ok:= true;
 			for j:= i + 1 to dimL do
 				v[j - 1]:= v[j];
 			dimL:= dimL - 1;
 		end
-		else
-			i:= i + 1;
 	end;
 End;
