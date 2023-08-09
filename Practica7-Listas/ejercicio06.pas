@@ -29,6 +29,7 @@ TYPE
 		sig: lista;
 	end;
 	vecEspectro = array [rngEspectro] of integer;
+{________________________Inicializar Vec________________________}
 PROCEDURE InicializarVector(var v: vecEspectro);
 var
 	i: rngEspectro;
@@ -36,6 +37,7 @@ begin
 	for i:= 1 to 7 do
 		v[i]:= 0;
 end;
+{________________________Generar Lista________________________}
 PROCEDURE GenerarLista (var l: lista; var vector: vecEspectro );
 	procedure leerReg (var z: regZonda);
 	begin
@@ -70,6 +72,8 @@ begin
 		crearNodo(l, regZ);
 	until (regZ.nombre = 'GAIA')
 end;
+
+{________________________Recorrer Vec________________________}
 PROCEDURE RecorrerVector(v: vecEspectro);
 var
 	i: integer;
@@ -78,6 +82,8 @@ begin
 		writeln('La cantidad de zondas que realizan estudios en el espectro ',i,' es de ',v[i]);
 
 end;
+
+{________________________Recorrer Lista________________________}
 PROCEDURE RecorrerLista(l: lista);
 	procedure recorrerListaProm(l: lista; var promCosto, promDuracion: real);
 	var
@@ -121,6 +127,8 @@ begin
 	writeln('La Zonda mas costosa es: ',maxNom);						{a}
 	writeln('La cantidad de zondas que superan la duracion promedio es: ',cantZ);		{c}
 end;
+
+{________________________P.P________________________}
 VAR
 	L: lista;
 	vector: vecEspectro;

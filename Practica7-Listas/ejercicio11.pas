@@ -9,6 +9,7 @@ recibirán el premio. La información debe imprimirse ordenada según el promedi
 PROGRAM Ejer11;
 CONST
 	MAXEgresados = 10;
+	
 TYPE
 	rngEgreados = 0..MAXEgresados;
 	str50 = string[50];
@@ -17,12 +18,16 @@ TYPE
 		apellido: str50;
 		promedio: real;
 	end;
+	
 	vecEgresados = array [1..MAXEgresados] of regEgresados;
+	
 	lista = ^nodo;
 	nodo = record
 		datos: regEgresados;
 		sig: lista;
 	end;
+	
+{________________________Generar Lista________________________}
 PROCEDURE GenerarLista (var l: lista);
 	procedure leerReg (var e: regEgresados);
 	begin
@@ -61,15 +66,18 @@ Begin
 	end;
 End;
 
+{________________________Recorrer Lista________________________}
 PROCEDURE RecorrerLista (l: lista; var v: vecEgresados; var dl: rngEgreados);
 Begin
 	dl:= 0;
 	while (l <> nil) and (dl < MAXEgresados) do begin
 		dl:= dl + 1;
-		v[dl]:= l^.datos;  {informar apellido y nro alumno}
-        {avanzar en lista}
+		v[dl]:= l^.datos;
+        l:= l^.sig
 	end;
 End;
+
+{________________________Recorrer Vec________________________}
 PROCEDURE RecorrerVector (v: vecEgresados; dl: rngEgreados);
 Var
 	i: rngEgreados;
@@ -79,6 +87,8 @@ Begin
 		writeln(v[i].nroAlumno);
 	end;
 End;
+
+{________________________P.P________________________}
 VAR
 	L: lista;
 	vector: vecEgresados;
